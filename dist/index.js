@@ -7,7 +7,10 @@ var eventDelegate = {
         var eventType = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'click';
         var fn = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : function () {};
 
+        var parentAll = getDomArray(parentElement);
+        parentAll.forEach(function () {});
         var parent = getDomArray(parentElement)[0];
+
         var current = getDomArray(currentElement)[0];
         if (parent && current) {
             parent.addEventListener(eventType, function (ev) {

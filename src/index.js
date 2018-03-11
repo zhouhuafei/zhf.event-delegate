@@ -3,7 +3,12 @@ const getDomArray = require('zhf.get-dom-array');
 const eventDelegate = {
     on(parentElement, currentElement, eventType = 'click', fn = function () {
     }) {
+        const parentAll = getDomArray(parentElement);
+        parentAll.forEach(function () {
+
+        });
         const parent = getDomArray(parentElement)[0];
+
         const current = getDomArray(currentElement)[0];
         if (parent && current) {
             parent.addEventListener(eventType, function (ev) {
