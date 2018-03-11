@@ -30,9 +30,10 @@ var eventDelegate = {
             }
         });
     },
-    remove: function remove(parentElement, currentElement) {
-        var eventType = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'click';
+    remove: function remove(parentElement) {
+        var eventType = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'click';
 
+        // 这个移除是无效的
         parentElement.removeEventListener(eventType);
     }
 };

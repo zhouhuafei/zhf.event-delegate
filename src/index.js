@@ -26,7 +26,8 @@ const eventDelegate = {
             }
         });
     },
-    remove(parentElement, currentElement, eventType = 'click') {
+    remove(parentElement, eventType = 'click') {
+        // 这个移除是无效的
         parentElement.removeEventListener(eventType);
     },
 };
