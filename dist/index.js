@@ -5,11 +5,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var getDomArray = require('zhf.get-dom-array');
+var EventEmitter = require('zhf.event-emitter');
+var event = new EventEmitter();
 var createUniqueChar = function createUniqueChar() {
     return new Date().getTime() + Math.random().toString().substring(2);
 };
-var EventEmitter = require('zhf.event-emitter');
-var event = new EventEmitter();
 
 /*
 const eventDelegate = {

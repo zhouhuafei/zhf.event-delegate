@@ -1,9 +1,9 @@
 const getDomArray = require('zhf.get-dom-array');
+const EventEmitter = require('zhf.event-emitter');
+const event = new EventEmitter();
 const createUniqueChar = function () {
     return (new Date().getTime() + Math.random().toString().substring(2));
 };
-const EventEmitter = require('zhf.event-emitter');
-const event = new EventEmitter();
 
 /*
 const eventDelegate = {
