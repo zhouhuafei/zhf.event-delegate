@@ -15,15 +15,19 @@ var eventDelegate = {
                     ev = ev || window.event;
                     var target = ev.target || ev.srcElement;
                     var isParent = false; // 是否冒泡到了父级
+                    if (target === parent) {
+                        isParent = true;
+                    }
                     currentAll.forEach(function (current) {
                         while (target !== current && !isParent) {
                             target = target.parentNode;
                             if (target === parent) {
                                 isParent = true;
                             }
+                            console.log(target);
                         }
                         if (target === current) {
-                            fn();
+                            fn.call(target);
                         }
                     });
                 });
