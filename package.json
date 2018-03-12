@@ -37,6 +37,7 @@
         "jest": "^22.1.1"
     },
     "dependencies": {
+        "zhf.event-emitter": "^1.0.2",
         "zhf.get-dom-array": "^1.0.1"
     }
 }
