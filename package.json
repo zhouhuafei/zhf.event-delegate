@@ -38,6 +38,8 @@
     },
     "dependencies": {
         "zhf.event-emitter": "^1.0.2",
-        "zhf.get-dom-array": "^1.0.1"
+        "zhf.get-dom-array": "^1.0.3",
+        "zhf.is-dom-parent": "^1.0.0",
+        "zhf.type-of": "^1.0.1"
     }
 }

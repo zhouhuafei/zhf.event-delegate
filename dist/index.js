@@ -6,6 +6,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var getDomArray = require('zhf.get-dom-array');
 var EventEmitter = require('zhf.event-emitter');
+var isDomParent = require('zhf.is-dom-parent');
+var typeOf = require('zhf.type-of');
 var event = new EventEmitter();
 var createUniqueChar = function createUniqueChar() {
     return new Date().getTime() + Math.random().toString().substring(2);
@@ -52,15 +54,9 @@ const eventDelegate = {
 };
 */
 
-console.log(createUniqueChar());
-console.log(createUniqueChar());
-console.log(createUniqueChar());
-
 var EventDelegate = function () {
     function EventDelegate() {
         _classCallCheck(this, EventDelegate);
-
-        this.parentElementArray = [];
     }
 
     _createClass(EventDelegate, [{
@@ -68,25 +64,92 @@ var EventDelegate = function () {
         value: function on(parentElement) {
             var eventType = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'click';
             var currentElement = arguments[2];
-            var fn = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : function () {};
+            var fn = arguments[3];
 
+            if (typeOf(eventType) !== 'string' || typeOf(currentElement) !== 'string' || typeOf(fn) !== 'function') {
+                console.log('event-delegate on 方法参数错误');
+                return;
+            }
             var parentAll = getDomArray(parentElement);
             parentAll.forEach(function (parent) {
-                parent.dataset.unique = createUniqueChar();
-                var currentAll = getDomArray(currentElement, parent); // getDomArray等待升级一下，第二参数是父级
+                if (typeOf(parentElement) !== 'string') {
+                    if (!parent.dataset.unique) {
+                        parent.dataset.unique = createUniqueChar();
+                    }
+                }
+                var name = EventDelegate.getName(parent, parentElement, eventType, currentElement);
+                event.on(name, function (json) {
+                    fn.call(json.nowData.dom);
+                });
             });
+            /*
+            parentAll.forEach(function (parent) {
+                parent.addEventListener(eventType, function (ev) {
+                    let name = `unique${eventType}${currentElement}`;
+                    if (typeOf(parentElement) !== 'string') {
+                        if (!parent.dataset.unique) {
+                            parent.dataset.unique = createUniqueChar();
+                        }
+                        name = `${name}${parent.dataset.unique}`;
+                    } else {
+                        name = `${name}${parentElement}`;
+                    }
+                    event.emit(name, {
+                        dom: ev.target,
+                    });
+                });
+            });
+            */
         }
     }, {
         key: 'off',
         value: function off(parentElement) {
             var eventType = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'click';
             var currentElement = arguments[2];
+            var num = arguments[3];
+
+            if (typeOf(eventType) !== 'string' || typeOf(currentElement) !== 'string') {
+                console.log('event-delegate off 方法参数错误');
+                return;
+            }
+            var parentAll = getDomArray(parentElement);
+            parentAll.forEach(function (parent) {
+                var name = EventDelegate.getName(parent, parentElement, eventType, currentElement);
+                if (isNaN(Number(num))) {
+                    event.off(name);
+                } else {
+                    event.off(name, num);
+                }
+            });
         }
     }, {
         key: 'emit',
         value: function emit(parentElement) {
             var eventType = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'click';
             var currentElement = arguments[2];
+
+            if (typeOf(eventType) !== 'string' || typeOf(currentElement) !== 'string') {
+                console.log('event-delegate emit 方法参数错误');
+                return;
+            }
+            var parentAll = getDomArray(parentElement);
+            parentAll.forEach(function (parent) {
+                var name = EventDelegate.getName(parent, parentElement, eventType, currentElement);
+                event.emit(name, {
+                    dom: undefined
+                });
+            });
+        }
+    }], [{
+        key: 'getName',
+        value: function getName(parent, parentElement, eventType, currentElement) {
+            var name = 'unique' + eventType + currentElement;
+            if (typeOf(parentElement) !== 'string') {
+                name = '' + name + parent.dataset.unique;
+            } else {
+                name = '' + name + parentElement;
+            }
+            return name;
         }
     }]);
 
