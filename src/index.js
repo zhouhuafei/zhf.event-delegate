@@ -66,7 +66,7 @@ class EventDelegate {
             }
             const name = EventDelegate.getName(parent, parentElement, eventType, currentElement);
             event.on(name, function (json) {
-                fn.call(json.nowData.dom);
+                fn.call(json.nowData && json.nowData.dom);
             });
         });
         /*
@@ -113,9 +113,7 @@ class EventDelegate {
         const parentAll = getDomArray(parentElement);
         parentAll.forEach((parent) => {
             const name = EventDelegate.getName(parent, parentElement, eventType, currentElement);
-            event.emit(name, {
-                dom: undefined,
-            });
+            event.emit(name);
         });
     }
 
