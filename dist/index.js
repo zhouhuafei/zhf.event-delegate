@@ -83,12 +83,15 @@ var EventDelegate = function () {
                 });
             });
             parentAll.forEach(function (parent) {
-                parent.addEventListener(eventType, function (ev) {
-                    var name = EventDelegate.getName(parent, parentElement, eventType, currentElement);
-                    event.emit(name, {
-                        dom: ev.target
+                var name = EventDelegate.getName(parent, parentElement, eventType, currentElement);
+                if (!parent[name]) {
+                    parent[name] = 'true';
+                    parent.addEventListener(eventType, function (ev) {
+                        event.emit(name, {
+                            dom: ev.target
+                        });
                     });
-                });
+                }
             });
         }
     }, {
