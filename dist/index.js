@@ -79,27 +79,17 @@ var EventDelegate = function () {
                 }
                 var name = EventDelegate.getName(parent, parentElement, eventType, currentElement);
                 event.on(name, function (json) {
-                    fn.call(json.nowData.dom);
+                    fn.call(json.nowData && json.nowData.dom);
                 });
             });
-            /*
             parentAll.forEach(function (parent) {
                 parent.addEventListener(eventType, function (ev) {
-                    let name = `unique${eventType}${currentElement}`;
-                    if (typeOf(parentElement) !== 'string') {
-                        if (!parent.dataset.unique) {
-                            parent.dataset.unique = createUniqueChar();
-                        }
-                        name = `${name}${parent.dataset.unique}`;
-                    } else {
-                        name = `${name}${parentElement}`;
-                    }
+                    var name = EventDelegate.getName(parent, parentElement, eventType, currentElement);
                     event.emit(name, {
-                        dom: ev.target,
+                        dom: ev.target
                     });
                 });
             });
-            */
         }
     }, {
         key: 'off',
@@ -135,9 +125,7 @@ var EventDelegate = function () {
             var parentAll = getDomArray(parentElement);
             parentAll.forEach(function (parent) {
                 var name = EventDelegate.getName(parent, parentElement, eventType, currentElement);
-                event.emit(name, {
-                    dom: undefined
-                });
+                event.emit(name);
             });
         }
     }], [{

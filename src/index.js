@@ -49,9 +49,6 @@ const eventDelegate = {
 */
 
 class EventDelegate {
-    constructor() {
-    }
-
     on(parentElement, eventType = 'click', currentElement, fn) {
         if (typeOf(eventType) !== 'string' || typeOf(currentElement) !== 'string' || typeOf(fn) !== 'function') {
             console.log('event-delegate on 方法参数错误');
@@ -69,24 +66,14 @@ class EventDelegate {
                 fn.call(json.nowData && json.nowData.dom);
             });
         });
-        /*
         parentAll.forEach(function (parent) {
             parent.addEventListener(eventType, function (ev) {
-                let name = `unique${eventType}${currentElement}`;
-                if (typeOf(parentElement) !== 'string') {
-                    if (!parent.dataset.unique) {
-                        parent.dataset.unique = createUniqueChar();
-                    }
-                    name = `${name}${parent.dataset.unique}`;
-                } else {
-                    name = `${name}${parentElement}`;
-                }
+                const name = EventDelegate.getName(parent, parentElement, eventType, currentElement);
                 event.emit(name, {
                     dom: ev.target,
                 });
             });
         });
-        */
     }
 
     off(parentElement, eventType = 'click', currentElement, num) {
