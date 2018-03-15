@@ -1,6 +1,6 @@
 const eventDelegate = require('../dist/index.min');
-eventDelegate.on('.wrap', 'click', '.item1', function () {
-    console.log('item1', this);
+eventDelegate.on('.wrap', 'click', '.item1', function (ev) {
+    console.log('item1', this, ev);
 });
 eventDelegate.on('.wrap', 'click', '.item2', function () {
     console.log('item2', this);

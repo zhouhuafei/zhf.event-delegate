@@ -51,7 +51,7 @@ var EventDelegate = function () {
                             }
                             if (target === current) {
                                 parent[name].fn.forEach(function (fn) {
-                                    fn.call(target);
+                                    fn.call(target, ev);
                                 });
                             }
                         });
