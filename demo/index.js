@@ -5,6 +5,9 @@ eventDelegate.on('.wrap', 'click', '.item', function () {
 eventDelegate.on('.wrap', 'click', '.item', function () {
     console.log('demo2', this);
 });
+// eventDelegate.on('.wrap', 'click', '.item', function () {
+//     console.log('demo2', this);
+// });
 // eventDelegate.on('.wrap', 'mouseover', '.item', function () {
 //     console.log('demo', this);
 // });
