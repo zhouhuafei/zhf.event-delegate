@@ -85,14 +85,21 @@ class EventDelegate {
                 return;
             }
         } else if (arguments.length === 3) {
-            if (typeOf(eventType) !== 'string' || typeOf(currentElement) !== 'string') {
+            const currentElementIsObject = typeOf(currentElement) === 'object';
+            if (typeOf(eventType) !== 'string' || (typeOf(currentElement) !== 'string' && !currentElementIsObject)) {
                 console.log('event-delegate emit 方法参数错误');
                 return;
+            }
+            if (currentElementIsObject) {
+                data = currentElementIsObject;
             }
         } else if (arguments.length === 4) {
             if (typeOf(eventType) !== 'string' || typeOf(currentElement) !== 'string') {
                 console.log('event-delegate emit 方法参数错误');
                 return;
+            }
+            if (typeOf(data) !== 'object') {
+                console.log('event-delegate emit 第四参数错误 第四参数是数据必须为对象');
             }
         }
         const parentAll = getDomArray(parentElement);
