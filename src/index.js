@@ -73,7 +73,6 @@ class EventDelegate {
         parentAll.forEach((parent) => {
             const name = EventDelegate.getName(eventType, currentElement);
             if (parent[name]) {
-                console.log(name);
                 parent[name].fn.forEach(function (fn) {
                     fn();
                 });
