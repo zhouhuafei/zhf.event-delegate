@@ -19,7 +19,8 @@ var EventDelegate = function () {
             var currentElement = arguments[2];
             var fn = arguments[3];
 
-            if (typeOf(eventType) !== 'string' || typeOf(currentElement) !== 'string' || typeOf(fn) !== 'function') {
+            var currentElementIsFn = typeOf(currentElement) === 'function';
+            if (typeOf(eventType) !== 'string' || typeOf(currentElement) !== 'string' && !currentElementIsFn || !currentElementIsFn && typeOf(fn) !== 'function') {
                 console.log('event-delegate on 方法参数错误');
                 return;
             }
@@ -32,32 +33,39 @@ var EventDelegate = function () {
                         fn: []
                     };
                     parent.addEventListener(eventType, function (ev) {
+                        var self = this;
                         ev = ev || window.event;
                         var target = ev.target || ev.srcElement;
                         var isParent = false; // 是否冒泡到了父级
                         if (target === parent) {
                             isParent = true;
                         }
-                        var currentAll = getDomArray(parent[name].currentElement, parent);
-                        currentAll.reverse().forEach(function (current) {
-                            target = ev.target || ev.srcElement;
-                            isParent = false;
-                            while (target !== current && !isParent) {
-                                if (target === parent) {
-                                    isParent = true;
-                                } else {
-                                    target = target.parentNode;
+                        if (typeOf(parent[name].currentElement) === 'function') {
+                            parent[name].fn.forEach(function (fn) {
+                                fn.call(self, ev);
+                            });
+                        } else {
+                            var currentAll = getDomArray(parent[name].currentElement, parent);
+                            currentAll.reverse().forEach(function (current) {
+                                target = ev.target || ev.srcElement;
+                                isParent = false;
+                                while (target !== current && !isParent) {
+                                    if (target === parent) {
+                                        isParent = true;
+                                    } else {
+                                        target = target.parentNode;
+                                    }
                                 }
-                            }
-                            if (target === current) {
-                                parent[name].fn.forEach(function (fn) {
-                                    fn.call(target, ev);
-                                });
-                            }
-                        });
+                                if (target === current) {
+                                    parent[name].fn.forEach(function (fn) {
+                                        fn.call(target, ev);
+                                    });
+                                }
+                            });
+                        }
                     });
                 }
-                parent[name].fn.push(fn);
+                parent[name].fn.push(currentElementIsFn ? currentElement : fn);
             });
         }
     }, {
@@ -67,11 +75,17 @@ var EventDelegate = function () {
             var currentElement = arguments[2];
             var num = arguments[3];
 
-            if (typeOf(eventType) !== 'string' || typeOf(currentElement) !== 'string') {
-                console.log('event-delegate off 方法参数错误');
-                return;
+            if (arguments.length === 2) {
+                if (typeOf(eventType) !== 'string') {
+                    console.log('event-delegate off 方法参数错误');
+                    return;
+                }
+            } else if (arguments.length === 3) {
+                if (typeOf(eventType) !== 'string' || typeOf(currentElement) !== 'string') {
+                    console.log('event-delegate off 方法参数错误');
+                    return;
+                }
             }
-
             var parentAll = getDomArray(parentElement);
             parentAll.forEach(function (parent) {
                 var name = EventDelegate.getName(eventType, currentElement);
@@ -90,9 +104,16 @@ var EventDelegate = function () {
             var eventType = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'click';
             var currentElement = arguments[2];
 
-            if (typeOf(eventType) !== 'string' || typeOf(currentElement) !== 'string') {
-                console.log('event-delegate emit 方法参数错误');
-                return;
+            if (arguments.length === 2) {
+                if (typeOf(eventType) !== 'string') {
+                    console.log('event-delegate emit 方法参数错误');
+                    return;
+                }
+            } else if (arguments.length === 3) {
+                if (typeOf(eventType) !== 'string' || typeOf(currentElement) !== 'string') {
+                    console.log('event-delegate emit 方法参数错误');
+                    return;
+                }
             }
             var parentAll = getDomArray(parentElement);
             parentAll.forEach(function (parent) {
@@ -107,7 +128,11 @@ var EventDelegate = function () {
     }], [{
         key: 'getName',
         value: function getName(eventType, currentElement) {
-            return 'unique' + eventType + currentElement;
+            var name = 'unique' + eventType;
+            if (typeOf(currentElement) !== 'function' && currentElement !== undefined) {
+                name += currentElement;
+            }
+            return name;
         }
     }]);
 

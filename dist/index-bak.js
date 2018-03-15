@@ -5,12 +5,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var getDomArray = require('zhf.get-dom-array');
-var EventEmitter = require('zhf.event-emitter');
 var typeOf = require('zhf.type-of');
-var event = new EventEmitter();
-var createUniqueChar = function createUniqueChar() {
-    return new Date().getTime() + Math.random().toString().substring(2);
-};
 
 var EventDelegate = function () {
     function EventDelegate() {
@@ -30,19 +25,12 @@ var EventDelegate = function () {
             }
             var parentAll = getDomArray(parentElement);
             parentAll.forEach(function (parent) {
-                if (!parent.unique) {
-                    parent.unique = createUniqueChar();
-                }
-                var name = EventDelegate.getName(parent, parentElement, eventType, currentElement);
-                console.log(name);
-                event.on(name, function (json) {
-                    fn.call(json.nowData && json.nowData.dom);
-                });
-            });
-            parentAll.forEach(function (parent) {
-                var name = EventDelegate.getName(parent, parentElement, eventType, currentElement);
+                var name = EventDelegate.getName(eventType, currentElement);
                 if (!parent[name]) {
-                    parent[name] = currentElement;
+                    parent[name] = {
+                        currentElement: currentElement,
+                        fn: []
+                    };
                     parent.addEventListener(eventType, function (ev) {
                         ev = ev || window.event;
                         var target = ev.target || ev.srcElement;
@@ -50,7 +38,7 @@ var EventDelegate = function () {
                         if (target === parent) {
                             isParent = true;
                         }
-                        var currentAll = getDomArray(parent[name], parent);
+                        var currentAll = getDomArray(parent[name].currentElement, parent);
                         currentAll.reverse().forEach(function (current) {
                             target = ev.target || ev.srcElement;
                             isParent = false;
@@ -62,13 +50,14 @@ var EventDelegate = function () {
                                 }
                             }
                             if (target === current) {
-                                event.emit(name, {
-                                    dom: ev.target
+                                parent[name].fn.forEach(function (fn) {
+                                    fn.call(target, ev);
                                 });
                             }
                         });
                     });
                 }
+                parent[name].fn.push(fn);
             });
         }
     }, {
@@ -82,13 +71,16 @@ var EventDelegate = function () {
                 console.log('event-delegate off 方法参数错误');
                 return;
             }
+
             var parentAll = getDomArray(parentElement);
             parentAll.forEach(function (parent) {
-                var name = EventDelegate.getName(parent, parentElement, eventType, currentElement);
-                if (isNaN(Number(num))) {
-                    event.off(name);
-                } else {
-                    event.off(name, num);
+                var name = EventDelegate.getName(eventType, currentElement);
+                if (parent[name]) {
+                    if (isNaN(Number(num))) {
+                        parent[name].fn.length = 0;
+                    } else {
+                        parent[name].fn.splice(num, 1);
+                    }
                 }
             });
         }
@@ -104,14 +96,18 @@ var EventDelegate = function () {
             }
             var parentAll = getDomArray(parentElement);
             parentAll.forEach(function (parent) {
-                var name = EventDelegate.getName(parent, parentElement, eventType, currentElement);
-                event.emit(name);
+                var name = EventDelegate.getName(eventType, currentElement);
+                if (parent[name]) {
+                    parent[name].fn.forEach(function (fn) {
+                        fn();
+                    });
+                }
             });
         }
     }], [{
         key: 'getName',
-        value: function getName(parent, parentElement, eventType, currentElement) {
-            return 'unique' + parent.unique + parentElement + eventType + currentElement;
+        value: function getName(eventType, currentElement) {
+            return 'unique' + eventType + currentElement;
         }
     }]);
 
