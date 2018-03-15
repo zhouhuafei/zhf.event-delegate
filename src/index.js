@@ -78,7 +78,7 @@ class EventDelegate {
         });
     }
 
-    emit(parentElement, eventType = 'click', currentElement) {
+    emit(parentElement, eventType = 'click', currentElement, data) {
         if (arguments.length === 2) {
             if (typeOf(eventType) !== 'string') {
                 console.log('event-delegate emit 方法参数错误');
@@ -89,13 +89,18 @@ class EventDelegate {
                 console.log('event-delegate emit 方法参数错误');
                 return;
             }
+        } else if (arguments.length === 4) {
+            if (typeOf(eventType) !== 'string' || typeOf(currentElement) !== 'string') {
+                console.log('event-delegate emit 方法参数错误');
+                return;
+            }
         }
         const parentAll = getDomArray(parentElement);
         parentAll.forEach((parent) => {
             const name = EventDelegate.getName(eventType, currentElement);
             if (parent[name]) {
                 parent[name].fn.forEach(function (fn) {
-                    fn();
+                    fn(parent, data);
                 });
             }
         });
