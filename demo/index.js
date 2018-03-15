@@ -1,21 +1,21 @@
 const eventDelegate = require('../dist/index.min');
-eventDelegate.on('.wrap', 'click', '.item', function () {
-    console.log('demo1', this);
+eventDelegate.on('.wrap', 'click', '.item1', function () {
+    console.log('item1', this);
 });
-eventDelegate.on('.wrap', 'click', '.item', function () {
-    console.log('demo2', this);
+eventDelegate.on('.wrap', 'click', '.item2', function () {
+    console.log('item2', this);
 });
-// eventDelegate.on('.wrap', 'click', '.item', function () {
-//     console.log('demo2', this);
-// });
-// eventDelegate.on('.wrap', 'mouseover', '.item', function () {
-//     console.log('demo', this);
-// });
-// eventDelegate.off('.wrap', 'click', '.item');
-// eventDelegate.emit('.wrap', 'click', '.item');
-// eventDelegate.emit('.wrap', 'mouseover', '.item');
-// eventDelegate.off('.wrap', 'mouseover', '.item');
-// eventDelegate.off('.wrap', 'click', '.item');
-
-// 移除有bug,移除了全部
-// emit有bug,emit不了
+eventDelegate.on('.wrap', 'click', '.item2', function () {
+    console.log('item2', this);
+});
+eventDelegate.on('.wrap', 'click', '.item3', function () {
+    console.log('item3', this);
+});
+eventDelegate.on('.wrap', 'click', '.item3', function () {
+    console.log('item3', this);
+});
+eventDelegate.on('.wrap', 'click', '.item3', function () {
+    console.log('item3', this);
+});
+eventDelegate.off('.wrap', 'click', '.item3'); // 移除
+eventDelegate.emit('.wrap', 'click', '.item1'); // 手动触发

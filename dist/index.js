@@ -75,10 +75,12 @@ var EventDelegate = function () {
             var parentAll = getDomArray(parentElement);
             parentAll.forEach(function (parent) {
                 var name = EventDelegate.getName(eventType, currentElement);
-                if (isNaN(Number(num))) {
-                    parent[name].fn.length = 0;
-                } else {
-                    parent[name].fn.splice(num, 1);
+                if (parent[name]) {
+                    if (isNaN(Number(num))) {
+                        parent[name].fn.length = 0;
+                    } else {
+                        parent[name].fn.splice(num, 1);
+                    }
                 }
             });
         }
@@ -95,9 +97,12 @@ var EventDelegate = function () {
             var parentAll = getDomArray(parentElement);
             parentAll.forEach(function (parent) {
                 var name = EventDelegate.getName(eventType, currentElement);
-                parent[name].fn.forEach(function (fn) {
-                    fn();
-                });
+                if (parent[name]) {
+                    console.log(name);
+                    parent[name].fn.forEach(function (fn) {
+                        fn();
+                    });
+                }
             });
         }
     }], [{
