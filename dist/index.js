@@ -103,6 +103,7 @@ var EventDelegate = function () {
         value: function emit(parentElement) {
             var eventType = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'click';
             var currentElement = arguments[2];
+            var data = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
 
             if (arguments.length === 2) {
                 if (typeOf(eventType) !== 'string') {
@@ -110,9 +111,22 @@ var EventDelegate = function () {
                     return;
                 }
             } else if (arguments.length === 3) {
+                var currentElementIsObject = typeOf(currentElement) === 'object';
+                if (typeOf(eventType) !== 'string' || typeOf(currentElement) !== 'string' && !currentElementIsObject) {
+                    console.log('event-delegate emit 方法参数错误');
+                    return;
+                }
+                if (currentElementIsObject) {
+                    data = currentElement;
+                    currentElement = undefined;
+                }
+            } else if (arguments.length === 4) {
                 if (typeOf(eventType) !== 'string' || typeOf(currentElement) !== 'string') {
                     console.log('event-delegate emit 方法参数错误');
                     return;
+                }
+                if (typeOf(data) !== 'object') {
+                    console.log('event-delegate emit 第四参数错误 第四参数是数据必须为对象');
                 }
             }
             var parentAll = getDomArray(parentElement);
@@ -120,7 +134,7 @@ var EventDelegate = function () {
                 var name = EventDelegate.getName(eventType, currentElement);
                 if (parent[name]) {
                     parent[name].fn.forEach(function (fn) {
-                        fn();
+                        fn(parent, data);
                     });
                 }
             });

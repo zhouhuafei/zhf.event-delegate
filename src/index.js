@@ -78,7 +78,7 @@ class EventDelegate {
         });
     }
 
-    emit(parentElement, eventType = 'click', currentElement, data) {
+    emit(parentElement, eventType = 'click', currentElement, data = {}) {
         if (arguments.length === 2) {
             if (typeOf(eventType) !== 'string') {
                 console.log('event-delegate emit 方法参数错误');
@@ -91,7 +91,8 @@ class EventDelegate {
                 return;
             }
             if (currentElementIsObject) {
-                data = currentElementIsObject;
+                data = currentElement;
+                currentElement = undefined;
             }
         } else if (arguments.length === 4) {
             if (typeOf(eventType) !== 'string' || typeOf(currentElement) !== 'string') {
