@@ -12,36 +12,37 @@ class EventDelegate {
         parentAll.forEach((parent) => {
             const name = EventDelegate.getName(eventType, currentElement);
             if (!parent[name]) {
+                // 存储绑定的事件以及对应的函数
                 parent[name] = {
                     currentElement: currentElement,
                     fn: [],
                 };
-                const isCapture = ['focus', 'blur'].indexOf(eventType) !== -1; // focus和blur事件没有冒泡只有捕获
+                const isCapture = ['focus', 'blur'].indexOf(eventType) !== -1; // focus和blur事件没有冒泡只有捕获。
                 parent.addEventListener(eventType, function (ev) {
                     const self = this;
                     ev = ev || window.event;
                     let target = ev.target || ev.srcElement;
-                    let isParent = false; // 是否冒泡到了父级
+                    let isParent = false; // 是否冒泡到了父级。
                     if (target === parent) {
                         isParent = true;
                     }
-                    if (typeOf(parent[name].currentElement) === 'function') {
+                    if (typeOf(parent[name].currentElement) === 'function') { // 第三个参数如果是个函数。
                         parent[name].fn.forEach(function (fn) {
                             fn.call(self, ev);
                         });
-                    } else {
+                    } else { // 第三个参数不是函数，表示第三个参数是要触发事件的那个元素。
                         const currentAll = getDomArray(parent[name].currentElement, parent);
-                        currentAll.reverse().forEach(function (current) {
+                        currentAll.reverse().forEach(function (current) { // 这里的倒叙是为了提高性能。如果出现嵌套的情况，则可以减少循环次数。
                             target = ev.target || ev.srcElement;
                             isParent = false;
-                            while (target !== current && !isParent) {
+                            while (target !== current && !isParent) { // 事件委托不可以委托到自身，例如事件绑定到body上，委托的对象如果也是body，那么委托是无效的。
                                 if (target === parent) {
                                     isParent = true;
                                 } else {
                                     target = target.parentNode;
                                 }
                             }
-                            if (target === current) {
+                            if (target === current) { // 找到了目标元素。
                                 parent[name].fn.forEach(function (fn) {
                                     fn.call(target, ev);
                                 });
