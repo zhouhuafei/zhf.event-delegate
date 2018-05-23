@@ -16,6 +16,7 @@ class EventDelegate {
                     currentElement: currentElement,
                     fn: [],
                 };
+                const isCapture = ['focus', 'blur'].indexOf(eventType) !== -1; // focus和blur事件没有冒泡只有捕获
                 parent.addEventListener(eventType, function (ev) {
                     const self = this;
                     ev = ev || window.event;
@@ -47,7 +48,7 @@ class EventDelegate {
                             }
                         });
                     }
-                });
+                }, isCapture);
             }
             parent[name].fn.push(currentElementIsFn ? currentElement : fn);
         });

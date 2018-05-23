@@ -2,6 +2,9 @@ const eventDelegate = require('../dist/index.min');
 eventDelegate.on('.wrap', 'click', function (ev, data) {
     console.log('wrap', this, ev, data);
 });
+eventDelegate.on('.wrap-input', 'blur', '.input-blur', function (ev) {
+    console.log('input-blur', this, ev);
+});
 eventDelegate.on('.wrap', 'click', '.item1', function (ev, data) {
     console.log('item1', this, ev, data);
 });
