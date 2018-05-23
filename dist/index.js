@@ -28,28 +28,27 @@ var EventDelegate = function () {
             parentAll.forEach(function (parent) {
                 var name = EventDelegate.getName(eventType, currentElement);
                 if (!parent[name]) {
+                    // 存储绑定的事件以及对应的函数
                     parent[name] = {
                         currentElement: currentElement,
                         fn: []
                     };
-                    var isCapture = ['focus', 'blur'].indexOf(eventType) !== -1; // focus和blur事件没有冒泡只有捕获
+                    var isCapture = ['focus', 'blur'].indexOf(eventType) !== -1; // focus和blur事件没有冒泡只有捕获。
                     parent.addEventListener(eventType, function (ev) {
                         var self = this;
                         ev = ev || window.event;
-                        var target = ev.target || ev.srcElement;
-                        var isParent = false; // 是否冒泡到了父级
-                        if (target === parent) {
-                            isParent = true;
-                        }
                         if (typeOf(parent[name].currentElement) === 'function') {
+                            // 第三个参数如果是个函数。
                             parent[name].fn.forEach(function (fn) {
                                 fn.call(self, ev);
                             });
                         } else {
-                            var currentAll = getDomArray(parent[name].currentElement, parent);
+                            // 第三个参数不是函数，表示第三个参数是要触发事件的那个元素。
+                            var currentAll = getDomArray(parent[name].currentElement, parent); // 从父级下获取目标元素，所以要保证父级下有目标元素才能触发。
                             currentAll.reverse().forEach(function (current) {
-                                target = ev.target || ev.srcElement;
-                                isParent = false;
+                                // 这里的倒叙是为了保证嵌套时的顺序，嵌套时应该是从子到父的顺序。
+                                var target = ev.target || ev.srcElement;
+                                var isParent = target === parent; // 如果目标元素就是父级，则触发不了，因为目标元素只能从父级下查找，不包括父级自身。
                                 while (target !== current && !isParent) {
                                     if (target === parent) {
                                         isParent = true;
@@ -58,6 +57,7 @@ var EventDelegate = function () {
                                     }
                                 }
                                 if (target === current) {
+                                    // 找到了目标元素。目标元素不可能和父级是同一个dom。因为目标元素是从父级下查找的。所以没必要判断target不等于父级。
                                     parent[name].fn.forEach(function (fn) {
                                         fn.call(target, ev);
                                     });

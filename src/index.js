@@ -21,28 +21,23 @@ class EventDelegate {
                 parent.addEventListener(eventType, function (ev) {
                     const self = this;
                     ev = ev || window.event;
-                    let target = ev.target || ev.srcElement;
-                    let isParent = false; // 是否冒泡到了父级。
-                    if (target === parent) {
-                        isParent = true;
-                    }
                     if (typeOf(parent[name].currentElement) === 'function') { // 第三个参数如果是个函数。
                         parent[name].fn.forEach(function (fn) {
                             fn.call(self, ev);
                         });
                     } else { // 第三个参数不是函数，表示第三个参数是要触发事件的那个元素。
-                        const currentAll = getDomArray(parent[name].currentElement, parent);
-                        currentAll.reverse().forEach(function (current) { // 这里的倒叙是为了提高性能。如果出现嵌套的情况，则可以减少循环次数。
-                            target = ev.target || ev.srcElement;
-                            isParent = false;
-                            while (target !== current && !isParent) { // 事件委托不可以委托到自身，例如事件绑定到body上，委托的对象如果也是body，那么委托是无效的。
+                        const currentAll = getDomArray(parent[name].currentElement, parent); // 从父级下获取目标元素，所以要保证父级下有目标元素才能触发。
+                        currentAll.reverse().forEach(function (current) { // 这里的倒叙是为了保证嵌套时的顺序，嵌套时应该是从子到父的顺序。
+                            let target = ev.target || ev.srcElement;
+                            let isParent = target === parent; // 如果目标元素就是父级，则触发不了，因为目标元素只能从父级下查找，不包括父级自身。
+                            while (target !== current && !isParent) {
                                 if (target === parent) {
                                     isParent = true;
                                 } else {
                                     target = target.parentNode;
                                 }
                             }
-                            if (target === current) { // 找到了目标元素。
+                            if (target === current) { // 找到了目标元素。目标元素不可能和父级是同一个dom。因为目标元素是从父级下查找的。所以没必要判断target不等于父级。
                                 parent[name].fn.forEach(function (fn) {
                                     fn.call(target, ev);
                                 });
