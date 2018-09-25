@@ -45,6 +45,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                flex-wrap: wrap;
             }
 
             .wrap, .wrap-input {
@@ -63,9 +64,38 @@
                 font-size: 12px;
                 background: rgba(0, 0, 0, 0.8);
             }
+
+            .mouse {
+                padding: 20px;
+                background: #000000;
+            }
+
+            .mouse-box {
+                padding: 20px;
+                background: #ff0000;
+            }
+
+            .mouse-box-text {
+                width: 200px;
+                height: 200px;
+                background: #ffffff;
+            }
         </style>
     </head>
     <body>
+        <div class="mouse">
+            <div class="mouse-box">
+                <div class="mouse-box-text">mouseover/mouseout</div>
+            </div>
+        </div>
+        <!--mouseenter和mouseleave暂未处理-->
+        <!--
+        <div class="mouse">
+            <div class="mouse-box">
+                <div class="mouse-box-text">mouseenter/mouseleave</div>
+            </div>
+        </div>
+        -->
         <div class="wrap-input">
             <div><input title="" type="text" class="input-blur" placeholder="有事件委托"></div>
             <div><input title="" type="text" class="input-blur" placeholder="有事件委托"></div>

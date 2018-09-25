@@ -8,6 +8,21 @@ eventDelegate.on('.wrap-input', 'blur', '.input-blur', function (ev) {
 eventDelegate.on('.wrap', 'click', '.item1', function (ev, data) {
     console.log('item1', this, ev, data);
 });
+eventDelegate.on('.mouse', 'mouseover', '.mouse-box', function (ev, data) {
+    console.log('mouseover', this, ev, data);
+});
+eventDelegate.on('.mouse', 'mouseout', '.mouse-box', function (ev, data) {
+    console.log('mouseout', this, ev, data);
+});
+/*
+// mouseenter和mouseleave暂未处理
+eventDelegate.on('.mouse', 'mouseenter', '.mouse-box', function (ev, data) {
+    console.log('mouseenter', this, ev, data);
+});
+eventDelegate.on('.mouse', 'mouseleave', '.mouse-box', function (ev, data) {
+    console.log('mouseleave', this, ev, data);
+});
+*/
 eventDelegate.on('.wrap', 'click', '.item2', function () {
     console.log('item2', this);
 });
