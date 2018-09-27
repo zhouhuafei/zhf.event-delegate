@@ -38,7 +38,14 @@ class EventDelegate {
                     captureArr.push('mouseleave');
                 }
                 const isCapture = captureArr.indexOf(eventType) !== -1;
-                parent.addEventListener(eventType, function (ev) {
+                let currentEventType = eventType; // 使用临时的eventType，否则后续name会出问题。
+                if (currentEventType === 'mouseenter') {
+                    currentEventType = 'mouseover';
+                }
+                if (currentEventType === 'mouseleave') {
+                    currentEventType = 'mouseout';
+                }
+                parent.addEventListener(currentEventType, function (ev) {
                     const self = this;
                     ev = ev || window.event;
                     if (typeOf(parent[name].currentElement) === 'function') { // 第三个参数如果是个函数。
@@ -64,6 +71,7 @@ class EventDelegate {
                             if (target === current) { // 找到了目标元素。目标元素不可能和父级是同一个dom。因为目标元素是从父级下查找的。所以没必要判断target不等于父级。
                                 parent[name].fn.forEach(function (fn) {
                                     if (eventType === 'mouseenter' || eventType === 'mouseleave') {
+                                        // 如果两个元素重叠了，因为捕获的原因，这里会触发多次。所以判断条件要修改。
                                         isEnterOrLeave(target, ev.relatedTarget) && fn.call(target, ev);
                                     } else {
                                         fn.call(target, ev);
