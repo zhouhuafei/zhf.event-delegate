@@ -58,14 +58,15 @@ var EventDelegate = function () {
                         captureArr.push('mouseenter');
                         captureArr.push('mouseleave');
                     }
-                    if (eventType === 'mouseenter') {
-                        eventType = 'mouseover';
-                    }
-                    if (eventType === 'mouseleave') {
-                        eventType = 'mouseout';
-                    }
                     var isCapture = captureArr.indexOf(eventType) !== -1;
-                    parent.addEventListener(eventType, function (ev) {
+                    var currentEventType = eventType; // 使用临时的eventType，否则后续name会出问题。
+                    if (currentEventType === 'mouseenter') {
+                        currentEventType = 'mouseover';
+                    }
+                    if (currentEventType === 'mouseleave') {
+                        currentEventType = 'mouseout';
+                    }
+                    parent.addEventListener(currentEventType, function (ev) {
                         var self = this;
                         ev = ev || window.event;
                         if (typeOf(parent[name].currentElement) === 'function') {
