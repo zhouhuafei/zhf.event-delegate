@@ -1,6 +1,6 @@
 {
     "name": "zhf.event-delegate",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "事件委托",
     "main": "dist/index.min.js",
     "scripts": {
@@ -38,6 +38,8 @@
     },
     "dependencies": {
         "zhf.get-dom-array": "^1.0.3",
+        "zhf.is-dom-parent": "^1.0.0",
+        "zhf.mouse-event": "^1.0.0",
         "zhf.type-of": "^1.0.1"
     }
 }

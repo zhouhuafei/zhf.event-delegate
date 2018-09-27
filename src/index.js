@@ -1,5 +1,15 @@
 const getDomArray = require('zhf.get-dom-array');
 const typeOf = require('zhf.type-of');
+const isDomParent = require('zhf.is-dom-parent');
+const {isEnterOrLeave} = require('zhf.mouse-event');
+
+function fnMouse(dom, cb, relatedTarget) { // mouseenter mouseleave 处理
+    const isSelf = relatedTarget === dom; // 是否是自身
+    const isChild = isDomParent(dom, relatedTarget); // 是否是子级
+    if (!isSelf && !isChild) { // 如不是自身或者是子级，则触发。
+        cb && cb.call(dom, dom);
+    }
+}
 
 class EventDelegate {
     on(parentElement, eventType = 'click', currentElement, fn) {
@@ -17,13 +27,27 @@ class EventDelegate {
                     currentElement: currentElement,
                     fn: [],
                 };
-                const isCapture = ['focus', 'blur'].indexOf(eventType) !== -1; // focus和blur事件没有冒泡只有捕获。
+                /*
+                focus和blur事件没有冒泡只有捕获。
+                mouseenter和mouseleave需要使用捕获才能获取到对应节点上的ev.relatedTarget。
+                否则ev.relatedTarget是绑定了事件的那个dom上的属性。
+                */
+                const captureArr = ['focus', 'blur'];
+                if (typeOf(parent[name].currentElement) !== 'function') { // 第三个参数如果是个函数。只有事件委托的时候才捕获mouseenter和mouseleave。
+                    captureArr.push('mouseenter');
+                    captureArr.push('mouseleave');
+                }
+                const isCapture = captureArr.indexOf(eventType) !== -1;
                 parent.addEventListener(eventType, function (ev) {
                     const self = this;
                     ev = ev || window.event;
                     if (typeOf(parent[name].currentElement) === 'function') { // 第三个参数如果是个函数。
                         parent[name].fn.forEach(function (fn) {
-                            fn.call(self, ev);
+                            if (eventType === 'mouseenter' || eventType === 'mouseleave') {
+                                isEnterOrLeave(self, ev.relatedTarget) && fn.call(self, ev);
+                            } else {
+                                fn.call(self, ev);
+                            }
                         });
                     } else { // 第三个参数不是函数，表示第三个参数是要触发事件的那个元素。
                         const currentAll = getDomArray(parent[name].currentElement, parent); // 从父级下获取目标元素，所以要保证父级下有目标元素才能触发。
@@ -39,7 +63,11 @@ class EventDelegate {
                             }
                             if (target === current) { // 找到了目标元素。目标元素不可能和父级是同一个dom。因为目标元素是从父级下查找的。所以没必要判断target不等于父级。
                                 parent[name].fn.forEach(function (fn) {
-                                    fn.call(target, ev);
+                                    if (eventType === 'mouseenter' || eventType === 'mouseleave') {
+                                        isEnterOrLeave(target, ev.relatedTarget) && fn.call(target, ev);
+                                    } else {
+                                        fn.call(target, ev);
+                                    }
                                 });
                             }
                         });

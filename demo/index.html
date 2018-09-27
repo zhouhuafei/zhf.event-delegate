@@ -68,6 +68,7 @@
             .mouse {
                 padding: 40px;
                 background: #000000;
+                margin: 0 10px;
             }
 
             .mouse-box {
@@ -84,22 +85,19 @@
     </head>
     <body>
         <div class="mouse">
-            <div class="mouse-box">
+            <div class="mouse-box mouse-box_over-out">
                 <div class="mouse-box-text">mouseover/mouseout</div>
             </div>
         </div>
-        <!--mouseenter和mouseleave暂未处理-->
-        <!--
         <div class="mouse">
-            <div class="mouse-box">
+            <div class="mouse-box mouse-box_enter-leave">
                 <div class="mouse-box-text">mouseenter/mouseleave</div>
             </div>
         </div>
-        -->
         <div class="wrap-input">
-            <div><input title="" type="text" class="input-blur" placeholder="有事件委托"></div>
-            <div><input title="" type="text" class="input-blur" placeholder="有事件委托"></div>
-            <div><input title="" type="text" placeholder="无事件委托"></div>
+            <div><input title="" type="text" class="input-blur" placeholder="绑定了事件委托"></div>
+            <div><input title="" type="text" class="input-blur" placeholder="绑定了事件委托"></div>
+            <div><input title="" type="text" placeholder="没有绑定事件委托"></div>
         </div>
         <div class="wrap">
             <div class="item1">1</div>
