@@ -45,3 +45,4 @@ eventDelegate.emit('.wrap', 'click', {mock: '.wrap'}); // 手动触发
 // eventDelegate.off('.wrap', 'click'); // 移除
 // eventDelegate.off('.wrap', 'click', '.item3'); // 移除
 eventDelegate.emit('.wrap', 'click', '.item1', {mock: '.item1'}); // 手动触发
+eventDelegate.emit('.mouse', 'mouseenter', {mock: '.mouse'}); // 手动触发
