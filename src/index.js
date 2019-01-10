@@ -1,15 +1,6 @@
 const getDomArray = require('zhf.get-dom-array');
 const typeOf = require('zhf.type-of');
-const isDomParent = require('zhf.is-dom-parent');
 const {isEnterOrLeave} = require('zhf.mouse-event');
-
-function fnMouse(dom, cb, relatedTarget) { // mouseenter mouseleave 处理
-    const isSelf = relatedTarget === dom; // 是否是自身
-    const isChild = isDomParent(dom, relatedTarget); // 是否是子级
-    if (!isSelf && !isChild) { // 如不是自身或者是子级，则触发。
-        cb && cb.call(dom, dom);
-    }
-}
 
 class EventDelegate {
     on(parentElement, eventType = 'click', currentElement, fn) {
@@ -68,7 +59,7 @@ class EventDelegate {
                                     target = target.parentNode;
                                 }
                             }
-                            if (target === current) { // 找到了目标元素。目标元素不可能和父级是同一个dom。因为目标元素是从父级下查找的。所以没必要判断target不等于父级。
+                            if (target === current) { // 找到了目标元素。目标元素current不可能和父级是同一个dom。因为目标元素是从父级下查找的。所以没必要判断target不等于父级。
                                 parent[name].fn.forEach(function (fn) {
                                     if (eventType === 'mouseenter' || eventType === 'mouseleave') {
                                         // 如果两个元素重叠了，因为捕获的原因，这里会触发多次。所以判断条件要修改。
